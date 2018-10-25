@@ -115,7 +115,24 @@ abstract class Embed
      */
     private static function process(Url $url, array $config, DispatcherInterface $dispatcher)
     {
-        $response = $dispatcher->dispatch($url);
+        //Search the adapter using the domain
+        $className = $url->getClassNameForDomain();
+        // 3.2〜3.5秒が、2.2〜2.5秒くらいに改善
+        if ($className == "Flic") {$className = "Flickr";}
+
+        if ($className != "Flickr")  {
+            $response = $dispatcher->dispatch($url);
+        } else {
+            $response = new Response(
+                $url,
+                $url,
+                "", //$result['statusCode'],
+                "", //$result['contentType'],
+                "", //$result['content'],
+                [], //$result['headers'],
+                []  //$result['info']
+            );
+        }
 
         //If is a file use File Adapter
         $adapter = self::getClass('File', $config);
@@ -124,8 +141,8 @@ abstract class Embed
             return new $adapter($response, $config, $dispatcher);
         }
 
-        //Search the adapter using the domain
-        $adapter = self::getClass($response->getUrl()->getClassNameForDomain(), $config);
+
+        $adapter = self::getClass($className, $config);
 
         if (class_exists($adapter) && $adapter::check($response)) {
             return new $adapter($response, $config, $dispatcher);

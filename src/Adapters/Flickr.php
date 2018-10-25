@@ -15,6 +15,7 @@ class Flickr extends Webpage
      */
     public static function check(Response $response)
     {
+        return true;
         return $response->isValid() && $response->getUrl()->match([
             'www.flickr.com/photos/*',
         ]);
