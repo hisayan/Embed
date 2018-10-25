@@ -6,6 +6,7 @@ use Embed\Adapters\Adapter;
 use Embed\Http\CurlDispatcher;
 use Embed\Http\DispatcherInterface;
 use Embed\Http\Url;
+use Embed\Http\Response;
 
 abstract class Embed
 {
